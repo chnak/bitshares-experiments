@@ -1,0 +1,17 @@
+{
+  "name": "bitshares-history-svg",
+  "version": "1.0.0",
+  "description": "Little graphs from recent history",
+  "scripts": {
+    "start": "babel-node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bitsharesjs": "^1.4.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.0.0"
+  }
+}

@@ -48,15 +48,13 @@ var api = {
 }
 
 var helpers = {
+	getPrice(elem){
+		return elem.base_volume / elem.quote_volume;
+	},
 	getStartEndPrices(history){
 		let startElem = history[0];
 		let endElem = history[history.length-1];
-		let startPrice = startElem.base_volume / startElem.quote_volume;
-		let endPrice = endElem.base_volume / endElem.quote_volume;
-		return [startPrice,endPrice];
-	},
-	getTotalPrice(bucket){
-		return bucket.base_volume / bucket.quote_volume;
+		return [this.getPrice(startElem),this.getPrice(endElem)];
 	},
 	formatPrice(price,base,quote){
 		let precision_diff = base.precision - quote.precision;
@@ -68,6 +66,14 @@ var helpers = {
 			prices[index] = this.formatPrice(price,base,quote);
 		});
 		return prices;
+	},
+	formatChange(change){
+		if (change > 1){
+			return -((change - 1)*100).toFixed(2);
+		}else{
+			return (change*100).toFixed(2);
+		}
+		return change;
 	}
 }
 
@@ -87,17 +93,23 @@ function retrieveStats(){
 				//Calculate bts in usd per day costs
 				let usd_in_bts_days = [];
 				btsusd.forEach(function(bucket){
-	    			usd_in_bts_days.push(helpers.formatPrice(helpers.getTotalPrice(bucket),bts,usd));
+	    			usd_in_bts_days.push(helpers.formatPrice(helpers.getPrice(bucket),bts,usd));
 	    		});
+
+	    		console.log("UIB",usd_in_bts_days);
 				
 				let [startPrice,endPrice] = helpers.formatPrices(helpers.getStartEndPrices(btseos),bts,eos);
 
 				let startPriceUsd = startPrice / usd_in_bts_days[0];
 				let endPriceUSD = endPrice / usd_in_bts_days[usd_in_bts_days.length-1];
+
+				let baseChange = startPrice / endPrice;
+				let usdChange = startPriceUsd / endPriceUSD;
+
 				console.log("STARTEND ",startPrice,endPrice);
 				console.log("IN USD",startPriceUsd,endPriceUSD);
-				console.log("BTS CHANGE FOR ",days_period," days: ",startPrice / endPrice);
-				console.log("USD CHANGE FOR ",days_period," days: ",startPriceUsd / endPriceUSD);
+				console.log("BTS CHANGE FOR ",days_period," days: ",helpers.formatChange(baseChange));
+				console.log("USD CHANGE FOR ",days_period," days: ",helpers.formatChange(usdChange));
 			});
 	    });    
 }

@@ -44,9 +44,6 @@ var api = {
 		    	reject(error);
 		    });
 		});
-	},
-	getBalance: (account_name) => {
-		e
 	}
 }
 
@@ -54,8 +51,8 @@ var helpers = {
 	getStartEndPrices(history){
 		let startElem = history[0];
 		let endElem = history[history.length-1];
-		let startPrice = startElem.open_base / startElem.open_quote;
-		let endPrice = endElem.close_base / endElem.close_quote;
+		let startPrice = startElem.base_volume / startElem.quote_volume;
+		let endPrice = endElem.base_volume / endElem.quote_volume;
 		return [startPrice,endPrice];
 	},
 	getTotalPrice(bucket){
@@ -63,12 +60,7 @@ var helpers = {
 	},
 	formatPrice(price,base,quote){
 		let precision_diff = base.precision - quote.precision;
-
-		if (precision_diff > 0){
-			price = price / Math.pow(10,precision_diff);
-		}else if(precision_diff < 0){
-			price = price * Math.pow(10,precision_diff);
-		}
+		price = (precision_diff > 0) ? price / Math.pow(10,precision_diff) : price * Math.pow(10,-precision_diff);		
 		return Math.abs(price).toFixed(4);
 	},
 	formatPrices(prices,base,quote){
@@ -97,7 +89,7 @@ function retrieveStats(){
 				btsusd.forEach(function(bucket){
 	    			usd_in_bts_days.push(helpers.formatPrice(helpers.getTotalPrice(bucket),bts,usd));
 	    		});
-
+				
 				let [startPrice,endPrice] = helpers.formatPrices(helpers.getStartEndPrices(btseos),bts,eos);
 
 				let startPriceUsd = startPrice / usd_in_bts_days[0];
@@ -140,7 +132,7 @@ api.connect().then((res) => {
 	console.timeEnd("connect");
 	console.time("test");
 	retrieveStats();
-	retrieveBalances("trfnd");
+	//retrieveBalances("anlopan364test2");
 });
 
 

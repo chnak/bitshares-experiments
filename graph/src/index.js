@@ -146,6 +146,3 @@ api.connect().then((res) => {
 	retrieveStats();
 	//retrieveBalances("anlopan364test2");
 });
-
-
-

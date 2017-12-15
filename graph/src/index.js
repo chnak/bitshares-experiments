@@ -81,7 +81,7 @@ var helpers = {
 
 
 
-function retrieveState(){
+function retrieveStats(){
 	    api.fetchAssets(["BTS","OPEN.EOS","USD"]).then((result) => {
 	    	let [bts,eos,usd] = result;
 	    	let days_period = 7;
@@ -139,6 +139,7 @@ console.time("connect")
 api.connect().then((res) => {
 	console.timeEnd("connect");
 	console.time("test");
+	retrieveStats();
 	retrieveBalances("trfnd");
 });
 

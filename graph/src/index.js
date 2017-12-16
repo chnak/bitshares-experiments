@@ -1,8 +1,6 @@
 import {Apis} from "bitsharesjs-ws";
 import {ChainStore} from "bitsharesjs";
 
-
-
 var api = {
 	connect: () => {
 		return Apis.instance("wss://bitshares.openledger.info/ws", true).init_promise;
@@ -48,12 +46,12 @@ var api = {
 }
 
 var helpers = {
-	getPrice(elem){
-		return elem.base_volume / elem.quote_volume;
+	getPrice(bucket){
+		return bucket.base_volume / bucket.quote_volume;
 	},
-	getStartEndPrices(history){
-		let startElem = history[0];
-		let endElem = history[history.length-1];
+	getStartEndPrices(buckets){
+		let startElem = buckets[0];
+		let endElem = buckets[buckets.length-1];
 		return [this.getPrice(startElem),this.getPrice(endElem)];
 	},
 	formatPrice(price,base,quote){
@@ -144,5 +142,5 @@ api.connect().then((res) => {
 	console.timeEnd("connect");
 	console.time("test");
 	retrieveStats();
-	//retrieveBalances("anlopan364test2");
+	retrieveBalances("anlopan364test2");
 });
